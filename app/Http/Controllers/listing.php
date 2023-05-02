@@ -22,14 +22,15 @@ class listing extends Controller
             'amount' => $request->amount,
         ]);
 
-        $bid = $listing->bids()->create([
-            'user_id' => $id,
-            'amount' => $request->input('bid_amount'),
-        ]);
+        // $bid = $listing->bids()->create([
+        //     'user_id' => $id,
+        //     'amount' => $request->input('bid_amount'),
+        // ]);
 
         return response()->json([
+            'success' =>true,
+            'message' =>'listing created successfully',
             'listing' => $listing,
-            'bid' => $bid,
-        ], 201);
+        ], 200);
     }
 }
