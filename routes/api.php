@@ -27,8 +27,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [ControllersUser::class, 'login']);
 Route::post('/register', [ControllersUser::class, 'register']);
 Route::post('/logout', [ControllersUser::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/user/{id}', [ControllersUser::class, 'deleteUser'])->middleware('auth:sanctum');
 
-
-//Listingd
+//Listings
 
 Route::post('/listing', [listing::class, 'createListing'])->middleware('auth:sanctum');
+
+Route::get('/listing', [listing::class, 'getListings']);
+
+Route::put('/listing/{id}', [listing::class, 'updateListing'])->middleware('auth:sanctum');
+
+Route::get('/listing/{id}', [listing::class, 'deleteListing'])->middleware('auth:sanctum');

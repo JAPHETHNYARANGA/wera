@@ -126,6 +126,34 @@ class user extends Controller
         
     }
 
+    public function deleteUser($id){
+        try{
+
+            $user = ModelsUser::find($id);
+
+            $res = $user->delete();
+            if($res){
+                return response([
+                    'success' =>true,
+                    'message'=>'user deleted successfully'
+                ],200);
+            }else{
+                return response([
+                    'success' =>false,
+                    'message' =>'user delete failed'
+                ],201);
+            }
+
+
+
+        }catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 
   
 }
