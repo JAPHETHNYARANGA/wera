@@ -28,6 +28,8 @@ Route::post('/login', [ControllersUser::class, 'login']);
 Route::post('/register', [ControllersUser::class, 'register']);
 Route::post('/logout', [ControllersUser::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/user/{id}', [ControllersUser::class, 'deleteUser'])->middleware('auth:sanctum');
+Route::get('user/{id}', [ControllersUser::class, 'getUser'])->middleware('auth:sanctum');
+Route::put('user', [ControllersUser::class, 'updateUser'])->middleware('auth:sanctum');
 
 //Listings
 

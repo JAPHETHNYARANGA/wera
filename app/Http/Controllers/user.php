@@ -154,6 +154,64 @@ class user extends Controller
         }
     }
 
+    public function getUser($id){
+
+        try{
+
+            $user = ModelsUser::find($id);
+
+            $res = $user->get();
+            if($res){
+                return response([
+                    'success' =>true,
+                    'message'=>'user obtained successfully',
+                    'user' =>$user
+                ],200);
+            }else{
+                return response([
+                    'success' =>false,
+                    'message' =>'user obtain failed'
+                ],201);
+            }
+
+
+
+        }catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+
+    }
+    public function updateUser(){
+        try{
+
+            // $user = ModelsUser::find($id);
+
+            // $res = $user->delete();
+            // if($res){
+            //     return response([
+            //         'success' =>true,
+            //         'message'=>'user deleted successfully'
+            //     ],200);
+            // }else{
+            //     return response([
+            //         'success' =>false,
+            //         'message' =>'user delete failed'
+            //     ],201);
+            // }
+
+
+
+        }catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 
   
 }
