@@ -73,6 +73,34 @@ class listing extends Controller
         }
     }
 
+    public function getUserListings(){
+        try {
+            $id = auth()->user()->id;
+            // $user = User::find($id);
+
+            $res = $listings = listings::where('user_id', $id)->get();
+
+            if ($res) {
+                return response([
+                    'success' => true,
+                    'message' => 'listings fetched successfully',
+                    'listings' => $listings
+                ], 200);
+            } else {
+                return response([
+                    'success' => false,
+                    'message' => 'listings fetched failed',
+
+                ], 201);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
 
     public function updateListing(Request $request, $id)
     {
@@ -143,4 +171,6 @@ class listing extends Controller
             ], 500);
         }
     }
+
+    
 }

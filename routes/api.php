@@ -38,3 +38,6 @@ Route::get('/listing', [listing::class, 'getListings']);
 Route::put('/listing/{id}', [listing::class, 'updateListing'])->middleware('auth:sanctum');
 
 Route::get('/listing/{id}', [listing::class, 'deleteListing'])->middleware('auth:sanctum');
+
+//get listings for user
+Route::get('/userListing', [listing::class, 'getUserListings'])->middleware('auth:sanctum');
