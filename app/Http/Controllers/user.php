@@ -126,11 +126,11 @@ class user extends Controller
         
     }
 
-    public function deleteUser($id){
+    public function deleteUser(Request $request){
         try{
 
-            $user = ModelsUser::find($id);
-
+            $user = $request->user();
+           
             $res = $user->delete();
             if($res){
                 return response([
@@ -154,11 +154,11 @@ class user extends Controller
         }
     }
 
-    public function getUser($id){
+    public function getUser(Request $request){
 
         try{
 
-            $user = ModelsUser::find($id);
+            $user = $request->user();
 
             $res = $user->get();
             if($res){
@@ -184,23 +184,42 @@ class user extends Controller
         }
 
     }
-    public function updateUser(){
+    public function updateUser(Request $request){
         try{
 
-            // $user = ModelsUser::find($id);
+            $user = $request->user();
 
-            // $res = $user->delete();
-            // if($res){
-            //     return response([
-            //         'success' =>true,
-            //         'message'=>'user deleted successfully'
-            //     ],200);
-            // }else{
-            //     return response([
-            //         'success' =>false,
-            //         'message' =>'user delete failed'
-            //     ],201);
-            // }
+            
+            // 'userId',
+            // 'phone',
+            // 'profile',
+            // 'rating',
+            // 'name',
+            // 'email',
+            // 'password',
+
+            $user->id;
+            $user->userId;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+            $user->profile = $request->profile;
+            // $user->description = $request ->description;
+            
+
+            $res = $user->save();
+
+            if ($res) {
+                return response([
+                    'success' => true,
+                    'message' => 'user updated Successfully'
+                ], 200);
+            } else {
+                return response([
+                    'success' => false,
+                    'message' => 'user update Failed'
+                ], 201);
+            }
 
 
 
