@@ -59,4 +59,15 @@ class User extends Authenticatable
    {
     return $this->hasMany(bids::class);
    }
+
+
+   public function sent_messages():HasMany
+   {
+    return $this->hasMany(Message::class, 'from_user_id');
+   }
+
+   public function received_messages():HasMany
+   {
+    return $this->hasMany(Message::class,'to_user_id');
+   }
 }

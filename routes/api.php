@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\listing;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\user as ControllersUser;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,3 +44,11 @@ Route::get('/listing/{id}', [listing::class, 'deleteListing'])->middleware('auth
 
 //get listings for user
 Route::get('/userListing', [listing::class, 'getUserListings'])->middleware('auth:sanctum');
+
+
+//application chat routes
+Route::middleware('auth:sanctum')->group(function (){
+    Route::get('/messages', [MessageController::class,'index']);
+    Route::post('/messages', [MessageController::class,'store']);
+    Route::put('/messages/{id}/seen', [MessageController::class,'markAsSeen']);
+});
