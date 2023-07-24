@@ -18,6 +18,7 @@ class listings extends Model
         'description',
         'location',
         'amount',
+        'category'
     ];
 
     public function user():BelongsTo{

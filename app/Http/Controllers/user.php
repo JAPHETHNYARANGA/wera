@@ -12,47 +12,48 @@ use Illuminate\Support\Str;
 class user extends Controller
 {
     //
-    public function login(Request $request){
+    public function login(Request $request)
+    {
 
-        try{
+        try {
 
-            $request ->validate([
+            $request->validate([
                 'email' => 'required|email',
                 'password' => 'required'
             ]);
-    
-            $email = $request['email'];
-            $user =ModelsUser::where('email', $email)->firstOrFail();
-            $token = $user->createToken('Authentication Token')->plainTextToken;
-    
-            $credentials = $request->only('email', 'password');
-    
-            if(Auth::attempt($credentials)){
-                return response(
-                    [
-                        'success' =>true,
-                        'message'=>'user Logged in successfully',
-                        'user' =>$user,
-                        'token' =>$token
-                    ],200
-                    );
-            }else{
-                return response(
-                    [
-                        'success' =>false,
-                        'message' =>'Login failed'
-                    ],201
-                   
-                    );
-            }
 
-        }catch (\Throwable $th) {
+            $email = $request['email'];
+            $user = ModelsUser::where('email', $email)->firstOrFail();
+            $token = $user->createToken('Authentication Token')->plainTextToken;
+
+            $credentials = $request->only('email', 'password');
+
+            if (Auth::attempt($credentials)) {
+                return response(
+                    [
+                        'success' => true,
+                        'message' => 'user Logged in successfully',
+                        'user' => $user,
+                        'token' => $token
+                    ],
+                    200
+                );
+            } else {
+                return response(
+                    [
+                        'success' => false,
+                        'message' => 'Login failed'
+                    ],
+                    201
+
+                );
+            }
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
             ], 500);
         }
-        
     }
 
     public function register(Request $request)
@@ -60,36 +61,36 @@ class user extends Controller
         try {
             $request->validate([
                 'email' => 'required|email',
-                'password' =>'required'
+                'password' => 'required'
             ]);
 
             $user = new ModelsUser();
 
             $user->name = $request->name;
-            $user ->userId = Str::uuid()->toString();
-            $user ->email = $request->email;
-            $user ->password = Hash::make($request->password);
+            $user->userId = Str::uuid()->toString();
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
 
-            $res = $user -> save();
+            $res = $user->save();
 
-            if($res){
+            if ($res) {
                 return response(
                     [
-                        'success'=>true,
-                        'message'=>'user Registered successfully',
+                        'success' => true,
+                        'message' => 'user Registered successfully',
                         'user' => $user
-                    ],200
+                    ],
+                    200
                 );
-            }else{
+            } else {
                 return response(
                     [
-                        'success'=>false,
-                        'message' =>'failed to register user'
-                    ],201
+                        'success' => false,
+                        'message' => 'failed to register user'
+                    ],
+                    201
                 );
             }
-
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -99,54 +100,51 @@ class user extends Controller
     }
 
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
 
-        try{
+        try {
             $token = $request->user()->tokens();
-        $res = $token->delete();
+            $res = $token->delete();
 
-        if($res){
-            return response([
-                'success' =>true,
-                'message'=>'logged out'
-            ],200);
-        }else{
-            return response([
-                'success' =>false,
-                'message' =>'logout failed'
-            ],201);
-        }
-
-        }catch (\Throwable $th) {
+            if ($res) {
+                return response([
+                    'success' => true,
+                    'message' => 'logged out'
+                ], 200);
+            } else {
+                return response([
+                    'success' => false,
+                    'message' => 'logout failed'
+                ], 201);
+            }
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
             ], 500);
         }
-        
     }
 
-    public function deleteUser(Request $request){
-        try{
+    public function deleteUser(Request $request)
+    {
+        try {
 
             $user = $request->user();
-           
+
             $res = $user->delete();
-            if($res){
+            if ($res) {
                 return response([
-                    'success' =>true,
-                    'message'=>'user deleted successfully'
-                ],200);
-            }else{
+                    'success' => true,
+                    'message' => 'user deleted successfully'
+                ], 200);
+            } else {
                 return response([
-                    'success' =>false,
-                    'message' =>'user delete failed'
-                ],201);
+                    'success' => false,
+                    'message' => 'user delete failed'
+                ], 201);
             }
-
-
-
-        }catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -154,42 +152,40 @@ class user extends Controller
         }
     }
 
-    public function getUser(Request $request){
+    public function getUser(Request $request)
+    {
 
-        try{
+        try {
 
             $user = $request->user();
 
             $res = $user->get();
-            if($res){
+            if ($res) {
                 return response([
-                    'success' =>true,
-                    'message'=>'user obtained successfully',
-                    'user' =>$user
-                ],200);
-            }else{
+                    'success' => true,
+                    'message' => 'user obtained successfully',
+                    'user' => $user
+                ], 200);
+            } else {
                 return response([
-                    'success' =>false,
-                    'message' =>'user obtain failed'
-                ],201);
+                    'success' => false,
+                    'message' => 'user obtain failed'
+                ], 201);
             }
-
-
-
-        }catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
             ], 500);
         }
-
     }
-    public function updateUser(Request $request){
-        try{
+    public function updateUser(Request $request)
+    {
+        try {
 
             $user = $request->user();
 
-            
+
             // 'userId',
             // 'phone',
             // 'profile',
@@ -205,7 +201,7 @@ class user extends Controller
             $user->phone = $request->phone;
             $user->profile = $request->profile;
             // $user->description = $request ->description;
-            
+
 
             $res = $user->save();
 
@@ -220,10 +216,7 @@ class user extends Controller
                     'message' => 'user update Failed'
                 ], 201);
             }
-
-
-
-        }catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -232,5 +225,23 @@ class user extends Controller
     }
 
 
-  
+    public function getUsers()
+    {
+        try {
+
+            $user = ModelsUser::all();
+            
+            return response([
+                'success' => true,
+                'message' => 'user obtained successfully',
+                'user' => $user
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }

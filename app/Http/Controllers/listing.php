@@ -13,18 +13,17 @@ class listing extends Controller
 
     public function createListing(Request $request)
     {
-
-
         try {
 
             $id = auth()->user()->id;
             $user = User::find($id);
 
-            $listing = $user->listings()->create([
+             $user->listings()->create([
                 'name' => $request->name,
                 'description' => $request->description,
                 'location' => $request->location,
                 'amount' => $request->amount,
+                'category' =>$request->category,
             ]);
 
             // $bid = $listing->bids()->create([
@@ -35,7 +34,6 @@ class listing extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'listing created successfully',
-                'listing' => $listing,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -47,24 +45,23 @@ class listing extends Controller
 
     public function getListings(Request $request)
     {
-
         try {
 
-            $res = $listings = listings::all();
+            $search = $request->search;
 
-            if ($res) {
-                return response([
-                    'success' => true,
-                    'message' => 'listings fetched successfully',
-                    'listings' => $listings
-                ], 200);
-            } else {
-                return response([
-                    'success' => false,
-                    'message' => 'listings fetched failed',
-
-                ], 201);
+            if($search){
+                $listings = listings::where('category', 'LIKE', "$search")->with('user:id,phone')->get();
+            }else{
+                $listings = listings::with('user:id,phone')->get();          
             }
+
+            return response([
+                'success' => true,
+                'message' => 'listings fetched successfully',
+                'listings' => $listings
+            ], 200);
+            
+            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -78,7 +75,7 @@ class listing extends Controller
             $id = auth()->user()->id;
             // $user = User::find($id);
 
-            $res = $listings = listings::where('user_id', $id)->get();
+            $res = $listings = listings::where('user_id', $id)->with('user:id,phone')->get();
 
             if ($res) {
                 return response([
@@ -114,6 +111,7 @@ class listing extends Controller
             $listing->description = $request ->description;
             $listing->location = $request ->location;
             $listing->amount = $request -> amount;
+            $listing->category = $request -> category;
 
             $res = $listing->save();
 
@@ -170,7 +168,5 @@ class listing extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
-    }
-
-    
+    } 
 }

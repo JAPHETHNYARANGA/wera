@@ -31,24 +31,24 @@ Route::post('/logout', [ControllersUser::class, 'logout'])->middleware('auth:san
 Route::get('deleteUser', [ControllersUser::class, 'deleteUser'])->middleware('auth:sanctum');
 Route::get('user', [ControllersUser::class, 'getUser'])->middleware('auth:sanctum');
 Route::put('user', [ControllersUser::class, 'updateUser'])->middleware('auth:sanctum');
+Route::get('users', [ControllersUser::class, 'getUsers'])->middleware('auth:sanctum');
 
 //Listings
 
-Route::post('/listing', [listing::class, 'createListing'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function(){
+    Route::post('/listing', [listing::class, 'createListing']);
+    Route::put('/listing/{id}', [listing::class, 'updateListing']);
+    Route::get('/listing/{id}', [listing::class, 'deleteListing']);
+    Route::get('/userListing', [listing::class, 'getUserListings']);
+    
+});
 
 Route::get('/listing', [listing::class, 'getListings']);
 
-Route::put('/listing/{id}', [listing::class, 'updateListing'])->middleware('auth:sanctum');
-
-Route::get('/listing/{id}', [listing::class, 'deleteListing'])->middleware('auth:sanctum');
-
-//get listings for user
-Route::get('/userListing', [listing::class, 'getUserListings'])->middleware('auth:sanctum');
-
-
 //application chat routes
-Route::middleware('auth:sanctum')->group(function (){
-    Route::get('/messages', [MessageController::class,'index']);
-    Route::post('/messages', [MessageController::class,'store']);
-    Route::put('/messages/{id}/seen', [MessageController::class,'markAsSeen']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::post('/messages', [MessageController::class, 'store']);
+
 });

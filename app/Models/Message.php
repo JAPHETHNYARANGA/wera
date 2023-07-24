@@ -11,20 +11,16 @@ class Message extends Model
     use HasFactory;
 
     protected $table = 'messages';
-    protected $fillable = ['from_user_id', 'to_user_id', 'message', 'is_seen'];
-
-    protected $casts = [
-        'is_seen' => 'boolean'
-    ];
+    protected $fillable = ['sender_id', 'receiver_id', 'message'];
 
 
-    public function  from_user():BelongsTo{
-        return $this->belongsTo(User::class);
+    public function sender():BelongsTo
+    {
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
-    public function to_user():BelongsTo{
-        return $this->belongsTo(User::class, 'to_user_id');
+    public function receiver():BelongsTo
+    {
+        return $this->belongsTo(User::class, 'receiver_id');
     }
-
-   
 }
