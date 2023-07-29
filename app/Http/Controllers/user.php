@@ -185,23 +185,14 @@ class user extends Controller
 
             $user = $request->user();
 
-
-            // 'userId',
-            // 'phone',
-            // 'profile',
-            // 'rating',
-            // 'name',
-            // 'email',
-            // 'password',
-
             $user->id;
             $user->userId;
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone = $request->phone;
             $user->profile = $request->profile;
-            // $user->description = $request ->description;
-
+            $user->bio = $request->bio;
+            $user->occupation = $request->occupation;
 
             $res = $user->save();
 
@@ -244,4 +235,6 @@ class user extends Controller
             ], 500);
         }
     }
+
+   
 }

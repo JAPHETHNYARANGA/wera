@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\bids;
 use App\Http\Controllers\listing;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\user as ControllersUser;
@@ -44,6 +45,12 @@ Route::middleware('auth:sanctum')->group(function(){
 });
 
 Route::get('/listing', [listing::class, 'getListings']);
+
+//bids
+Route::middleware('auth:sanctum')->group(function(){
+    Route::post('/bids',[bids::class, 'createBid']);
+    Route::get('/bids/{listing_id}', [bids::class, 'getBidsForListing']);
+});
 
 //application chat routes
 

@@ -23,6 +23,8 @@ class User extends Authenticatable
         'phone',
         'profile',
         'rating',
+        'bio',
+        'occupation',
         'name',
         'email',
         'password',
@@ -50,19 +52,24 @@ class User extends Authenticatable
 
     //table relationships
 
-    public function listings() :HasMany
+    public function listings(): HasMany
     {
         return $this->hasMany(listings::class);
     }
 
-   public function bids()
-   {
-    return $this->hasMany(bids::class);
-   }
+    public function bids()
+    {
+        return $this->hasMany(bids::class);
+    }
 
 
-   public function messages()
+    public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+    
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class);
     }
 }
