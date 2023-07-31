@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User as ModelsUser;
+use App\Models\WaitingList;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
 
 class user extends Controller
 {
-    //
+    
     public function login(Request $request)
     {
 
@@ -228,6 +229,44 @@ class user extends Controller
                 'user' => $user
             ], 200);
 
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function addEmail(Request $request){
+        try {
+            $request->validate([
+                'email' => 'required|email|unique:waiting_list,email',
+            ]);
+
+            $user = new WaitingList();
+
+            $user->email = $request->email;
+          
+            $res = $user->save();
+
+            if ($res) {
+                return response(
+                    [
+                        'success' => true,
+                        'message' => 'email added successfully',
+                        'user' => $user
+                    ],
+                    200
+                );
+            } else {
+                return response(
+                    [
+                        'success' => false,
+                        'message' => 'failed to add email '
+                    ],
+                    201
+                );
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

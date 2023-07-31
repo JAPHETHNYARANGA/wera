@@ -23,6 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//waiting list
+
+Route::post('/email', [ControllersUser::class,'addEmail']);
 
 //Authentication
 
