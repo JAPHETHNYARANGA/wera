@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\bids;
+use App\Http\Controllers\category;
 use App\Http\Controllers\listing;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\user as ControllersUser;
@@ -32,18 +33,21 @@ Route::post('/email', [ControllersUser::class,'addEmail']);
 Route::post('/login', [ControllersUser::class, 'login']);
 Route::post('/register', [ControllersUser::class, 'register']);
 Route::post('/logout', [ControllersUser::class, 'logout'])->middleware('auth:sanctum');
-Route::get('deleteUser', [ControllersUser::class, 'deleteUser'])->middleware('auth:sanctum');
-Route::get('user', [ControllersUser::class, 'getUser'])->middleware('auth:sanctum');
+Route::delete('deleteUser', [ControllersUser::class, 'deleteUser'])->middleware('auth:sanctum');
+Route::get('getuser', [ControllersUser::class, 'getUser'])->middleware('auth:sanctum');
 Route::put('user', [ControllersUser::class, 'updateUser'])->middleware('auth:sanctum');
 Route::get('users', [ControllersUser::class, 'getUsers'])->middleware('auth:sanctum');
+Route::get('category', [category::class, 'getCategories'])->middleware('auth:sanctum');
 
 //Listings
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('/listing', [listing::class, 'createListing']);
     Route::put('/listing/{id}', [listing::class, 'updateListing']);
-    Route::get('/listing/{id}', [listing::class, 'deleteListing']);
+    Route::get('/deletelisting/{id}', [listing::class, 'deleteListing']);
     Route::get('/userListing', [listing::class, 'getUserListings']);
+    Route::get('/individuallisting/{id}', [listing::class,'getIndividualListing']);
+
     
 });
 

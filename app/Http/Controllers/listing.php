@@ -23,7 +23,8 @@ class listing extends Controller
                 'description' => $request->description,
                 'location' => $request->location,
                 'amount' => $request->amount,
-                'category' =>$request->category,
+                'category_id' =>$request->category,
+                'status'=>$request->status
             ]);
 
             // $bid = $listing->bids()->create([
@@ -46,22 +47,24 @@ class listing extends Controller
     public function getListings(Request $request)
     {
         try {
-
             $search = $request->search;
-
-            if($search){
-                $listings = listings::where('category', 'LIKE', "$search")->with('user:id,phone')->get();
-            }else{
-                $listings = listings::with('user:id,phone')->get();          
+    
+            if ($search) {
+                $listings = listings::where('category', 'LIKE', "%$search%")
+                                    ->with('user:id,phone')
+                                    ->orderBy('updated_at', 'desc') // Add orderBy clause for most recently updated
+                                    ->get();
+            } else {
+                $listings = listings::with('user:id,phone')
+                                    ->orderBy('updated_at', 'desc') // Add orderBy clause for most recently updated
+                                    ->get();
             }
-
+    
             return response([
                 'success' => true,
                 'message' => 'listings fetched successfully',
                 'listings' => $listings
             ], 200);
-            
-            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -69,6 +72,7 @@ class listing extends Controller
             ], 500);
         }
     }
+    
 
     public function getUserListings(){
         try {
@@ -98,7 +102,34 @@ class listing extends Controller
         }
     }
 
+    public function getIndividualListing($id){
+        try{
+            $res = $listing = listings::find($id);
 
+            if($res){
+                return response([
+                    'success' => true,
+                    'message' => 'item obtained Successfully',
+                    'listing'=>$listing
+                ], 200);
+            }else{
+                return response([
+                    'success' => false,
+                    'message' => 'item fetch Failed'
+                ], 201);
+
+            }
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    
     public function updateListing(Request $request, $id)
     {
 

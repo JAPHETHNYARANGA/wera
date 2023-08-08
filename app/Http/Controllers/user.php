@@ -8,11 +8,12 @@ use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class user extends Controller
 {
-    
+
     public function login(Request $request)
     {
 
@@ -191,9 +192,20 @@ class user extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone = $request->phone;
-            $user->profile = $request->profile;
             $user->bio = $request->bio;
             $user->occupation = $request->occupation;
+
+            // Check if a profile image was uploaded
+            if ($request->hasFile('profile')) {
+                // Delete the previous profile image if it exists
+                if ($user->profile) {
+                    Storage::delete($user->profile);
+                }
+
+                // Store the new profile image
+                $path = $request->file('profile')->store('profile');
+                $user->profile = $path;
+            }
 
             $res = $user->save();
 
@@ -222,13 +234,12 @@ class user extends Controller
         try {
 
             $user = ModelsUser::all();
-            
+
             return response([
                 'success' => true,
                 'message' => 'user obtained successfully',
                 'user' => $user
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -237,7 +248,8 @@ class user extends Controller
         }
     }
 
-    public function addEmail(Request $request){
+    public function addEmail(Request $request)
+    {
         try {
             $request->validate([
                 'email' => 'required|email|unique:waiting_list,email',
@@ -246,7 +258,7 @@ class user extends Controller
             $user = new WaitingList();
 
             $user->email = $request->email;
-          
+
             $res = $user->save();
 
             if ($res) {
@@ -274,6 +286,4 @@ class user extends Controller
             ], 500);
         }
     }
-
-   
 }

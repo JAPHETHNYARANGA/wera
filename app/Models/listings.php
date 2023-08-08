@@ -18,7 +18,8 @@ class listings extends Model
         'description',
         'location',
         'amount',
-        'category'
+        'category_id',
+        'status'
     ];
 
     public function user():BelongsTo{
@@ -27,6 +28,10 @@ class listings extends Model
 
     public function bids():HasMany{
         return $this->hasMany(bids::class);
+    }
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
    
