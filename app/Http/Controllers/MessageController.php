@@ -14,7 +14,8 @@ class MessageController extends Controller
     {
         try {
 
-            $user = $request->user();
+            // $user = $request->user();
+            // $userId = auth()->user()->userId;
 
             // $validatedData = $request->validate([
             //     'receiver_id' => 'required|exists:users,id',
@@ -22,6 +23,7 @@ class MessageController extends Controller
             // ]);
 
             $message = Message::create([
+                // 'sender_id' => $userId,
                 'sender_id' => $request->sender_id,
                 'receiver_id' => $request->receiver_id,
                 'message' => $request->message
@@ -49,31 +51,41 @@ class MessageController extends Controller
     public function getMessages(Request $request)
     {
         try {
+            // $userId = auth()->user()->userId;
+            $senderId = $request->sender_id;
+            $receiverId = $request->receiver_id;
 
-            $validatedData = $request->validate([
-                'receiver_id' => 'required',
-                'sender_id' => 'required',
-            ]);
+          
 
-            $senderId = $validatedData['sender_id'];
-            $receiverId = $validatedData['receiver_id'];
-
-            $messages = Message::Where(function ($query) use ($senderId, $receiverId){
-                $query->where('sender_id', $senderId)
-                ->where('receiver_id', $receiverId);
-            })->orWhere(function ($query) use ($senderId, $receiverId){
-                $query->where('sender_id', $receiverId)
-                ->where('receiver_id', $senderId);
-            })->orderBy('created_at', 'asc')->get();
-
+            // $messages = Message::where('sender_id', $senderId)
+            //         ->orWhere('receiver_id', $receiverId)
+            //         ->orderBy('created_at', 'asc')
+            //         ->get();
+            $messages = Message::all();
             if($messages){
-                return response()->json(['messages' => $messages], 200);
+                return response()->json([
+                    'success'=>true,
+                    'messages' => $messages
+                ], 200);
             }else{
                 return response()->json([
+                    'success'=>false,
                     'message' => 'Failure fetching messages'
                 ], 201);
             }
         } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getSpecificMessage(){
+        try{
+
+
+        }catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
