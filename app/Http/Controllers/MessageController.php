@@ -52,16 +52,16 @@ class MessageController extends Controller
     {
         try {
             // $userId = auth()->user()->userId;
-            $senderId = $request->sender_id;
-            $receiverId = $request->receiver_id;
+            $senderId = $request->userId;
+            $receiverId = $request->userId;
 
           
 
-            // $messages = Message::where('sender_id', $senderId)
-            //         ->orWhere('receiver_id', $receiverId)
-            //         ->orderBy('created_at', 'asc')
-            //         ->get();
-            $messages = Message::all();
+            $messages = Message::where('sender_id', $senderId)
+                    ->orWhere('receiver_id', $receiverId)
+                    ->orderBy('created_at', 'asc')
+                    ->get();
+            // $messages = Message::all();
             if($messages){
                 return response()->json([
                     'success'=>true,
