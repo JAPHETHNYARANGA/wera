@@ -67,3 +67,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 Route::post('/messages', [MessageController::class, 'index']);
+
+Route::get('message', [MessageController::class, 'getSpecificMessage']);

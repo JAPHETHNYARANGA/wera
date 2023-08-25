@@ -133,32 +133,6 @@ class MessageController extends Controller
     }
 
 
-    // public function getSpecificMessage(request $request)
-    // {
-    //     try {
-
-    //         $messageId = $request->messageId;
-
-    //         $message = Message::where('messageId', $messageId)->get();
-
-    //         if ($message) {
-    //             return response()->json([
-    //                 'success' => true,
-    //                 'messages' => $message
-    //             ], 200);
-    //         } else {
-    //             return response()->json([
-    //                 'success' => false,
-    //                 'message' => 'Failure fetching messages'
-    //             ], 201);
-    //         }
-    //     } catch (\Throwable $th) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => $th->getMessage()
-    //         ], 500);
-    //     }
-    // }
 
     public function getSpecificMessage(Request $request)
     {
