@@ -194,6 +194,7 @@ class user extends Controller
             $user->phone = $request->phone;
             $user->bio = $request->bio;
             $user->occupation = $request->occupation;
+            $user->profile = $request->profile;
 
             // Check if a profile image was uploaded
             if ($request->hasFile('profile')) {

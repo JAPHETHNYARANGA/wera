@@ -61,8 +61,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 //application chat routes
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/messages', [MessageController::class, 'getMessages']);
-    Route::post('/messages', [MessageController::class, 'index']);
+    // Route::post('/messages', [MessageController::class, 'index']);
 
-// });
+});
+Route::post('/messages', [MessageController::class, 'index']);
