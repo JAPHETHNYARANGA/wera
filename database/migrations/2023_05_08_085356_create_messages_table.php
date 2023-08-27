@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('sender_id'); // Match the data type with 'userId' in 'users' table
             $table->string('receiver_id'); // Match the data type with 'userId' in 'users' table
-            $table->string('message');
+            $table->Text('message');
             $table->string('chat_id');
             $table->timestamps();
 

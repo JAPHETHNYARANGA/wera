@@ -102,15 +102,18 @@ class listing extends Controller
         }
     }
 
-    public function getIndividualListing($id){
+    public function getIndividualListing(Request $request, $id){
         try{
             $res = $listing = listings::find($id);
+            $userId = $res->user_id;
+            $user = User::where('id', $userId)->first();
 
             if($res){
                 return response([
                     'success' => true,
                     'message' => 'item obtained Successfully',
-                    'listing'=>$listing
+                    'listing'=>$listing,
+                    'user' =>$user
                 ], 200);
             }else{
                 return response([

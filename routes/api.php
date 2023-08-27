@@ -8,6 +8,7 @@ use App\Http\Controllers\user as ControllersUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Mime\MessageConverter;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //waiting list
 
-Route::post('/email', [ControllersUser::class,'addEmail']);
+Route::post('/email', [ControllersUser::class, 'addEmail']);
 
 //Authentication
 
@@ -41,31 +42,29 @@ Route::get('category', [category::class, 'getCategories'])->middleware('auth:san
 
 //Listings
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/listing', [listing::class, 'createListing']);
     Route::put('/listing/{id}', [listing::class, 'updateListing']);
     Route::get('/deletelisting/{id}', [listing::class, 'deleteListing']);
     Route::get('/userListing', [listing::class, 'getUserListings']);
-    Route::get('/individuallisting/{id}', [listing::class,'getIndividualListing']);
-
-    
+    Route::get('/individuallisting/{id}', [listing::class, 'getIndividualListing']);
 });
 
 Route::get('/listing', [listing::class, 'getListings']);
 
 //bids
-Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/bids',[bids::class, 'createBid']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/bids', [bids::class, 'createBid']);
     Route::get('/bids/{listing_id}', [bids::class, 'getBidsForListing']);
 });
 
 //application chat routes
 
 Route::middleware('auth:sanctum')->group(function () {
+    
+    Route::get('/chatId', [MessageController::class, 'getChatId']);
     Route::get('/messages', [MessageController::class, 'getMessages']);
-    // Route::post('/messages', [MessageController::class, 'index']);
-
+    Route::get('message', [MessageController::class, 'getSpecificMessage']);
+    Route::post('/messages', [MessageController::class, 'index']);
+    Route::get('/receiverId', [MessageController::class, 'getReceiverId']);
 });
-Route::post('/messages', [MessageController::class, 'index']);
-
-Route::get('message', [MessageController::class, 'getSpecificMessage']);
