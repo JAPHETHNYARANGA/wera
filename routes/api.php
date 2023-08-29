@@ -48,9 +48,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/deletelisting/{id}', [listing::class, 'deleteListing']);
     Route::get('/userListing', [listing::class, 'getUserListings']);
     Route::get('/individuallisting/{id}', [listing::class, 'getIndividualListing']);
+    Route::get('/listing', [listing::class, 'getListings']);
 });
 
-Route::get('/listing', [listing::class, 'getListings']);
+
 
 //bids
 Route::middleware('auth:sanctum')->group(function () {

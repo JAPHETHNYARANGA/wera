@@ -24,7 +24,8 @@ class listing extends Controller
                 'location' => $request->location,
                 'amount' => $request->amount,
                 'category_id' =>$request->category,
-                'status'=>$request->status
+                'status'=>$request->status,
+                'image' =>$request->image
             ]);
 
             // $bid = $listing->bids()->create([

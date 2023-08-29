@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('category_id')->nullable()->constrained('category')->onDelete('set null');
             $table->string('amount');
             $table->integer('status');
+            $table->string('image');
             $table->timestamps();
         });
     }
