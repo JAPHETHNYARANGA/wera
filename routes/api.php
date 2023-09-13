@@ -38,6 +38,7 @@ Route::delete('deleteUser', [ControllersUser::class, 'deleteUser'])->middleware(
 Route::get('getuser', [ControllersUser::class, 'getUser'])->middleware('auth:sanctum');
 Route::put('user', [ControllersUser::class, 'updateUser'])->middleware('auth:sanctum');
 Route::get('users', [ControllersUser::class, 'getUsers'])->middleware('auth:sanctum');
+Route::get('profile', [ControllersUser::class, 'fetchProfile'])->middleware('auth:sanctum');
 Route::get('category', [category::class, 'getCategories'])->middleware('auth:sanctum');
 
 //Listings

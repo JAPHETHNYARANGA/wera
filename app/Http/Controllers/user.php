@@ -229,6 +229,31 @@ class user extends Controller
         }
     }
 
+    public function fetchProfile(Request $request) {
+        try {
+            $userId = $request->userId;
+    
+            $user = ModelsUser::where('userId', $userId)->first();
+    
+            if ($user) {
+                return response()->json([
+                    'status' => true,
+                    'user' => $user
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found'
+                ], 404);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+    
 
     public function getUsers()
     {

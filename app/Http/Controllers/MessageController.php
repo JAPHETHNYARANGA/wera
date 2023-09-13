@@ -69,11 +69,11 @@ class MessageController extends Controller
     {
         try {
             $userId = $request->userId;
-
+    
             // Subquery to get the latest message for each chat_id group
             $latestMessagesSubquery = Message::selectRaw('MAX(created_at) as latest_created_at')
                 ->groupBy('chat_id');
-
+    
             $messages = Message::whereIn(
                 'created_at', // Use created_at as part of the subquery to filter by latest messages
                 $latestMessagesSubquery
@@ -84,20 +84,35 @@ class MessageController extends Controller
                 })
                 ->orderBy('created_at', 'desc') // Order by descending to get the latest messages first
                 ->get();
-
-            $otherUserIds = $messages->pluck('sender_id', 'receiver_id')->unique()->reject(function ($otherUserId) use ($userId) {
+    
+            $otherUserIds = $messages->flatMap(function ($message) use ($userId) {
+                // Concatenate sender_id and receiver_id into a single collection
+                return [$message->sender_id, $message->receiver_id];
+            })->unique()->reject(function ($otherUserId) use ($userId) {
                 return $otherUserId == $userId;
             });
-
+    
             // Fetch other user information
-            $user = User::whereIn('id', $otherUserIds)->first();
-
-
-            if ($messages) {
+            $users = User::whereIn('userId', $otherUserIds)->get();
+    
+            // Associate each message with its user information
+            $messagesWithUsers = $messages->map(function ($message) use ($users, $userId) {
+                // Determine whether the user is the sender or receiver
+                $otherUserId = $message->sender_id !== $userId ? $message->sender_id : $message->receiver_id;
+    
+                // Find the user information for this message
+                $user = $users->firstWhere('userId', $otherUserId);
+    
+                // Add the user information to the message
+                $message->user = $user;
+    
+                return $message;
+            });
+    
+            if ($messagesWithUsers) {
                 return response()->json([
                     'success' => true,
-                    'messages' => $messages,
-                    'user' => $user
+                    'messages' => $messagesWithUsers,
                 ], 200);
             } else {
                 return response()->json([
@@ -112,6 +127,7 @@ class MessageController extends Controller
             ], 500);
         }
     }
+    
 
 
 
