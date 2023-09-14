@@ -32,8 +32,12 @@ Route::post('/email', [ControllersUser::class, 'addEmail']);
 //Authentication
 
 Route::post('/login', [ControllersUser::class, 'login']);
+Route::get('email/verify/{id}/{hash}', [ControllersUser::class, 'verifyEmail'])->name('verification.verify');
 Route::post('/register', [ControllersUser::class, 'register']);
 Route::post('/logout', [ControllersUser::class, 'logout'])->middleware('auth:sanctum');
+Route::post('forgot-password', [ControllersUser::class, 'resetPassword']);
+
+
 Route::delete('deleteUser', [ControllersUser::class, 'deleteUser'])->middleware('auth:sanctum');
 Route::get('getuser', [ControllersUser::class, 'getUser'])->middleware('auth:sanctum');
 Route::put('user', [ControllersUser::class, 'updateUser'])->middleware('auth:sanctum');

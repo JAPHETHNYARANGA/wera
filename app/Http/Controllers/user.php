@@ -26,11 +26,21 @@ class user extends Controller
 
             $email = $request['email'];
             $user = ModelsUser::where('email', $email)->firstOrFail();
-            $token = $user->createToken('Authentication Token')->plainTextToken;
+           
 
             $credentials = $request->only('email', 'password');
 
             if (Auth::attempt($credentials)) {
+
+                if (!$user->email_verified_at) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Email not verified, Check your email inbox to verify',
+                    ], 200);
+                }
+
+                $token = $user->createToken('Authentication Token')->plainTextToken;
+
                 return response(
                     [
                         'success' => true,
@@ -75,11 +85,14 @@ class user extends Controller
 
             $res = $user->save();
 
+            // Send verification email
+            $user->sendEmailVerificationNotification();
+
             if ($res) {
                 return response(
                     [
                         'success' => true,
-                        'message' => 'user Registered successfully',
+                        'message' => 'user Registered successfully, check email to activate account',
                         'user' => $user
                     ],
                     200
@@ -229,12 +242,13 @@ class user extends Controller
         }
     }
 
-    public function fetchProfile(Request $request) {
+    public function fetchProfile(Request $request)
+    {
         try {
             $userId = $request->userId;
-    
+
             $user = ModelsUser::where('userId', $userId)->first();
-    
+
             if ($user) {
                 return response()->json([
                     'status' => true,
@@ -253,7 +267,7 @@ class user extends Controller
             ], 500);
         }
     }
-    
+
 
     public function getUsers()
     {
@@ -311,5 +325,24 @@ class user extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    public function verifyEmail(Request $request, $id, $hash)
+    {
+        $user = ModelsUser::findOrFail($id);
+    
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email already verified.']);
+        }
+    
+        if (!$user->markEmailAsVerified()) {
+            return response()->json(['message' => 'Email verification failed.']);
+        }
+    
+        return response()->json(['message' => 'Email verified successfully.']);
+    }
+
+    public function resetPassword(Request $request){
+        
     }
 }
