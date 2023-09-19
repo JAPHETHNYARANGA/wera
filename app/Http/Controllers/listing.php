@@ -83,6 +83,7 @@ class listing extends Controller
             $res = $listings = listings::where('user_id', $id)->with('user:id,phone')->get();
 
             if ($res) {
+                
                 return response([
                     'success' => true,
                     'message' => 'listings fetched successfully',
@@ -110,11 +111,14 @@ class listing extends Controller
             $user = User::where('id', $userId)->first();
 
             if($res){
+                
+                $res->increment('request_count');
                 return response([
                     'success' => true,
                     'message' => 'item obtained Successfully',
                     'listing'=>$listing,
-                    'user' =>$user
+                    'user' =>$user,
+                    'request_count' => $listing->request_count,
                 ], 200);
             }else{
                 return response([

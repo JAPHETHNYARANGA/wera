@@ -35,7 +35,7 @@ class user extends Controller
                 if (!$user->email_verified_at) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Email not verified, Check your email inbox to verify',
+                        'message' => 'Email not verified, Check your email inbox or spam to verify',
                     ], 200);
                 }
 
@@ -92,7 +92,7 @@ class user extends Controller
                 return response(
                     [
                         'success' => true,
-                        'message' => 'user Registered successfully, check email to activate account',
+                        'message' => 'user Registered successfully, check email inbox or spam to activate account',
                         'user' => $user
                     ],
                     200
@@ -142,30 +142,38 @@ class user extends Controller
     }
 
     public function deleteUser(Request $request)
-    {
-        try {
+{
+    try {
+        $user = $request->user();
 
-            $user = $request->user();
-
-            $res = $user->delete();
-            if ($res) {
-                return response([
-                    'success' => true,
-                    'message' => 'user deleted successfully'
-                ], 200);
-            } else {
-                return response([
-                    'success' => false,
-                    'message' => 'user delete failed'
-                ], 201);
-            }
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+        if (!$user) {
+            return response([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
         }
+
+        $res = $user->delete();
+
+        if ($res) {
+            return response([
+                'success' => true,
+                'message' => 'User deleted successfully'
+            ], 204); // 204 No Content indicates successful deletion with no response body
+        } else {
+            return response([
+                'success' => false,
+                'message' => 'User delete failed'
+            ], 500); // 500 Internal Server Error for a server error
+        }
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'message' => $th->getMessage()
+        ], 500); // 500 Internal Server Error for exceptions
     }
+}
+
 
     public function getUser(Request $request)
     {

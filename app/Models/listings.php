@@ -20,7 +20,8 @@ class listings extends Model
         'amount',
         'category_id',
         'status',
-        'image'
+        'image',
+        'request_count',
     ];
 
     public function user():BelongsTo{

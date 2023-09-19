@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('amount');
             $table->integer('status');
             $table->string('image');
+            $table->integer('request_count')->default(0);
             $table->timestamps();
         });
     }

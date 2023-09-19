@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\bids;
 use App\Http\Controllers\category;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\listing;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\user as ControllersUser;
@@ -35,7 +36,8 @@ Route::post('/login', [ControllersUser::class, 'login']);
 Route::get('email/verify/{id}/{hash}', [ControllersUser::class, 'verifyEmail'])->name('verification.verify');
 Route::post('/register', [ControllersUser::class, 'register']);
 Route::post('/logout', [ControllersUser::class, 'logout'])->middleware('auth:sanctum');
-Route::post('forgot-password', [ControllersUser::class, 'resetPassword']);
+Route::post('forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
+Route::post('reset-password', [ForgotPasswordController::class, 'reset']);
 
 
 Route::delete('deleteUser', [ControllersUser::class, 'deleteUser'])->middleware('auth:sanctum');
