@@ -2,25 +2,15 @@
 
 use App\Http\Controllers\bids;
 use App\Http\Controllers\category;
+use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\listing;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\user as ControllersUser;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\Mime\MessageConverter;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -39,16 +29,17 @@ Route::post('/logout', [ControllersUser::class, 'logout'])->middleware('auth:san
 Route::post('forgot-password', [ForgotPasswordController::class, 'forgotPassword']);
 Route::post('reset-password', [ForgotPasswordController::class, 'reset']);
 
+Route::middleware('auth:sanctum')->group(function(){
+    Route::delete('deleteUser', [ControllersUser::class, 'deleteUser']);
+    Route::get('getuser', [ControllersUser::class, 'getUser']);
+    Route::put('user', [ControllersUser::class, 'updateUser']);
+    Route::get('users', [ControllersUser::class, 'getUsers']);
+    Route::get('profile', [ControllersUser::class, 'fetchProfile']);
+    Route::get('category', [category::class, 'getCategories']);
+});
 
-Route::delete('deleteUser', [ControllersUser::class, 'deleteUser'])->middleware('auth:sanctum');
-Route::get('getuser', [ControllersUser::class, 'getUser'])->middleware('auth:sanctum');
-Route::put('user', [ControllersUser::class, 'updateUser'])->middleware('auth:sanctum');
-Route::get('users', [ControllersUser::class, 'getUsers'])->middleware('auth:sanctum');
-Route::get('profile', [ControllersUser::class, 'fetchProfile'])->middleware('auth:sanctum');
-Route::get('category', [category::class, 'getCategories'])->middleware('auth:sanctum');
 
 //Listings
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/listing', [listing::class, 'createListing']);
     Route::put('/listing/{id}', [listing::class, 'updateListing']);
@@ -56,6 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/userListing', [listing::class, 'getUserListings']);
     Route::get('/individuallisting/{id}', [listing::class, 'getIndividualListing']);
     Route::get('/listing', [listing::class, 'getListings']);
+    Route::post('/listing/{listing_id}/add-to-favorites', [FavoritesController::class, 'addToFavorites']);
+    Route::post('/listing/{listing_id}/remove-from-favorites', [FavoritesController::class, 'removeFromFavorites']);
 });
 
 

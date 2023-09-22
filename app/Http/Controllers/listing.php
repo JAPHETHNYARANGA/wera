@@ -28,11 +28,6 @@ class listing extends Controller
                 'image' =>$request->image
             ]);
 
-            // $bid = $listing->bids()->create([
-            //     'user_id' => $id,
-            //     'amount' => $request->input('bid_amount'),
-            // ]);
-
             return response()->json([
                 'success' => true,
                 'message' => 'listing created successfully',
@@ -78,7 +73,6 @@ class listing extends Controller
     public function getUserListings(){
         try {
             $id = auth()->user()->id;
-            // $user = User::find($id);
 
             $res = $listings = listings::where('user_id', $id)->with('user:id,phone')->get();
 
@@ -137,10 +131,8 @@ class listing extends Controller
     }
 
 
-    
     public function updateListing(Request $request, $id)
     {
-
         try {
             $listing = listings::find($id);
 
@@ -176,8 +168,6 @@ class listing extends Controller
 
     public function deleteListing($id)
     {
-
-
         try {
 
             $listing = listings::find($id);
