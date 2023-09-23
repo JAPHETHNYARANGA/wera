@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/listing', [listing::class, 'getListings']);
     Route::post('/listing/{listing_id}/add-to-favorites', [FavoritesController::class, 'addToFavorites']);
     Route::post('/listing/{listing_id}/remove-from-favorites', [FavoritesController::class, 'removeFromFavorites']);
+    Route::get('getFavorites', [FavoritesController::class,'getFavorites']);
 });
 
 

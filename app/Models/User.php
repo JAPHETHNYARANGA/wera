@@ -82,4 +82,8 @@ class User extends Authenticatable
 
         $this->notify(new ResetPasswordNotification($url));
     }
+    public function favorites() 
+    {
+        return $this->hasMany(Favorites::class);
+    }
 }

@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('listing_id');
             $table->timestamps();
+
+            // Define foreign keys
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('listing_id')->references('id')->on('listings')->onDelete('cascade');
         });
     }
 
