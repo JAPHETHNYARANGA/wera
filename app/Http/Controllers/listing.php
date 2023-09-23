@@ -40,11 +40,12 @@ class listing extends Controller
         }
     }
 
-    public function getListings(Request $request)
+        public function getListings(Request $request)
     {
         try {
             $search = $request->search;
-    
+            $user = auth()->user(); // Get the authenticated user
+
             if ($search) {
                 $listings = listings::where('category', 'LIKE', "%$search%")
                                     ->with('user:id,phone')
@@ -55,7 +56,12 @@ class listing extends Controller
                                     ->orderBy('updated_at', 'desc') // Add orderBy clause for most recently updated
                                     ->get();
             }
-    
+
+            // Add a 'favorite' property to each listing
+            foreach ($listings as $listing) {
+                $listing->favorite = $user->favorites->contains('listing_id', $listing->id);
+            }
+
             return response([
                 'success' => true,
                 'message' => 'listings fetched successfully',
@@ -68,6 +74,7 @@ class listing extends Controller
             ], 500);
         }
     }
+
     
 
     public function getUserListings(){
