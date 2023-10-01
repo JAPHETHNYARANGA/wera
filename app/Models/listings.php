@@ -17,6 +17,7 @@ class listings extends Model
         'name',
         'description',
         'location',
+        'sublocation',
         'amount',
         'category_id',
         'status',

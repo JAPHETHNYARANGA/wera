@@ -22,6 +22,7 @@ class listing extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'location' => $request->location,
+                'sublocation' => $request->sublocation,
                 'amount' => $request->amount,
                 'category_id' =>$request->category,
                 'status'=>$request->status,
@@ -57,11 +58,7 @@ class listing extends Controller
                                     ->get();
             }
 
-            // Add a 'favorite' property to each listing
-            foreach ($listings as $listing) {
-                $listing->favorite = $user->favorites->contains('listing_id', $listing->id);
-            }
-
+          
             return response([
                 'success' => true,
                 'message' => 'listings fetched successfully',
@@ -105,37 +102,52 @@ class listing extends Controller
         }
     }
 
-    public function getIndividualListing(Request $request, $id){
-        try{
-            $res = $listing = listings::find($id);
-            $userId = $res->user_id;
-            $user = User::where('id', $userId)->first();
+    public function getIndividualListing(Request $request, $id)
+{
+    try {
+        $listing = listings::find($id);
 
-            if($res){
-                
-                $res->increment('request_count');
-                return response([
-                    'success' => true,
-                    'message' => 'item obtained Successfully',
-                    'listing'=>$listing,
-                    'user' =>$user,
-                    'request_count' => $listing->request_count,
-                ], 200);
-            }else{
-                return response([
-                    'success' => false,
-                    'message' => 'item fetch Failed'
-                ], 201);
-
-            }
-
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+        if (!$listing) {
+            return response([
+                'success' => false,
+                'message' => 'Item not found',
+            ], 404);
         }
+
+        $userId = $listing->user_id;
+        $user = User::where('id', $userId)->first();
+
+        // Retrieve the authenticated user
+        $authUser = auth()->user();
+
+        // Check if the listing is a favorite for the authenticated user
+        $isFavorite = $authUser->favorites->contains('listing_id', $listing->id);
+        if($listing){
+            $listing ->increment('request_count');
+            // Include the 'favorite' property in the response
+        return response([
+            'success' => true,
+            'message' => 'Item obtained successfully',
+            'listing' => $listing,
+            'user' => $user,
+            'request_count' => $listing->request_count,
+            'favorite' => $isFavorite, // Add the 'favorite' property
+        ], 200);
+        }else{
+            return response([
+                'success' => false,
+                'message' => 'item fetch Failed'
+            ], 201);
+        }
+        
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ], 500);
     }
+}
+
 
 
     public function updateListing(Request $request, $id)

@@ -99,7 +99,7 @@ class FavoritesController extends Controller
             return response([
                 'success' => true,
                 'message' => 'Favorites fetched successfully',
-                'favorites' => $favorites,
+                'listings' => $favorites,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('Location');
+            $table->string('sublocation');
             $table->foreignId('category_id')->nullable()->constrained('category')->onDelete('set null');
             $table->string('amount');
             $table->integer('status');
