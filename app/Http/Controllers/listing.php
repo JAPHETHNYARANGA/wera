@@ -41,37 +41,48 @@ class listing extends Controller
         }
     }
 
-        public function getListings(Request $request)
-    {
-        try {
-            $search = $request->search;
-            $user = auth()->user(); // Get the authenticated user
+    public function getListings(Request $request)
+{
+    try {
+        $search = $request->search;
+        $user = auth()->user(); // Get the authenticated user
 
-            if ($search) {
-                $listings = listings::where('category', 'LIKE', "%$search%")
-                                    ->with('user:id,phone')
-                                    ->orderBy('updated_at', 'desc') // Add orderBy clause for most recently updated
-                                    ->get();
-            } else {
-                $listings = listings::with('user:id,phone')
-                                    ->orderBy('updated_at', 'desc') // Add orderBy clause for most recently updated
-                                    ->get();
-            }
+        // Define the number of items per page
+        $page = $request->input('page', 1); 
+        $pageSize = 20;
 
-          
-            return response([
-                'success' => true,
-                'message' => 'listings fetched successfully',
-                'listings' => $listings
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+        if ($search) {
+            // Debug: Check the search criteria
+            // dd($search);
+
+            // Use the where method to filter based on search criteria
+            $listings = Listings::where('category', 'LIKE', "%$search%")
+                ->with('user:id,phone')
+                ->orderBy('updated_at', 'desc')
+                ->paginate($pageSize, ['*'], 'page', $page);
+        } else {
+            // If no search criteria, retrieve all listings with pagination
+            $listings = Listings::with('user:id,phone')
+                ->orderBy('updated_at', 'desc')
+                ->paginate($pageSize, ['*'], 'page', $page);
         }
-    }
 
+        return response([
+            'success' => true,
+            'message' => 'Listings fetched successfully',
+            'listings' => $listings,
+        ], 200);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ], 500);
+    }
+}
+
+   
+    
+    
     
 
     public function getUserListings(){
