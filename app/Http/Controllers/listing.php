@@ -85,33 +85,33 @@ class listing extends Controller
     
     
 
-    public function getUserListings(){
-        try {
-            $id = auth()->user()->id;
+public function getUserListings(Request $request)
+{
+    try {
+        $id = auth()->user()->id;
 
-            $res = $listings = listings::where('user_id', $id)->with('user:id,phone')->get();
+        // Define the number of items per page
+        $page = $request->input('page', 1); 
+        $pageSize = 20;
 
-            if ($res) {
-                
-                return response([
-                    'success' => true,
-                    'message' => 'listings fetched successfully',
-                    'listings' => $listings
-                ], 200);
-            } else {
-                return response([
-                    'success' => false,
-                    'message' => 'listings fetched failed',
+        $listings = Listings::where('user_id', $id)
+            ->with('user:id,phone')
+            ->orderBy('updated_at', 'desc')
+            ->paginate($pageSize, ['*'], 'page', $page);
 
-                ], 201);
-            }
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
+        return response([
+            'success' => true,
+            'message' => 'Listings fetched successfully',
+            'listings' => $listings,
+        ], 200);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ], 500);
     }
+}
+
 
     public function getIndividualListing(Request $request, $id)
 {
