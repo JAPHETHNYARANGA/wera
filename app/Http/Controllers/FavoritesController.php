@@ -94,7 +94,7 @@ class FavoritesController extends Controller
             $user = Auth::user();
 
             // Set the number of items per page
-            $perPage = $request->input('per_page', 10);
+            $perPage = $request->input('per_page', 20);
 
             // Fetch the user's favorite listings along with the listing details using pagination
             $favorites = $user->favorites()->with('listing')->paginate($perPage);
