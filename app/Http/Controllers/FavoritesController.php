@@ -88,14 +88,17 @@ class FavoritesController extends Controller
         }
     }
 
-    public function getFavorites()
+    public function getFavorites(Request $request)
     {
         try {
             $user = Auth::user();
-    
-            // Fetch the user's favorite listings along with the listing details
-            $favorites = $user->favorites->load('listing');
-    
+
+            // Set the number of items per page
+            $perPage = $request->input('per_page', 10);
+
+            // Fetch the user's favorite listings along with the listing details using pagination
+            $favorites = $user->favorites()->with('listing')->paginate($perPage);
+
             return response([
                 'success' => true,
                 'message' => 'Favorites fetched successfully',
